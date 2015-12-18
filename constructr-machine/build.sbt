@@ -2,6 +2,7 @@ name := "constructr-machine"
 
 libraryDependencies ++= List(
   Library.akkaActor,
+  Library.akkaCluster,
   Library.akkaTestkit % "test",
   Library.scalaTest   % "test"
 )

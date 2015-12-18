@@ -17,6 +17,7 @@
 package de.heikoseeberger.constructr.machine
 
 import akka.actor.{ FSM, Props, Status }
+import akka.cluster.ClusterEvent.ClusterDomainEvent
 import akka.pattern.pipe
 import akka.stream.ActorMaterializer
 import de.heikoseeberger.constructr.coordination.Coordination
@@ -187,6 +188,8 @@ final class ConstructrMachine[N: Coordination.NodeSerialization, B <: Coordinati
     case Event(Coordination.SelfAdded(context: B#Context @unchecked), data) =>
       log.debug("Successfully added self, going to RefreshScheduled")
       goto(State.RefreshScheduled).using(data.copy(coordinationRetriesLeft = coordinationRetries, context = context))
+    case Event(_: ClusterDomainEvent, data) =>
+      goto(State.AddingSelf).using(data)
   }
 
   // RefreshScheduled
